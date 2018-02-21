@@ -63,7 +63,7 @@ private:
     void readHeaterData();
 
     /* Heater Target Send or Update Function
-     * ... Send new target if available, else update GUI display value
+     * ... Send new target temperature to heater PCB
      * ...Returns:
      * ......Nothing
      */

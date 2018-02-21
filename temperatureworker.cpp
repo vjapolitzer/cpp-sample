@@ -7,7 +7,9 @@ TemperatureWorker::TemperatureWorker(TemperatureController *parent) : I2CWorker(
 void TemperatureWorker::pollAndUpdate() {
     while (parent->poll()) {
         readHeaterData();
-        updateTarget();
+        if (parent->getNewTargetAvailable()) { // true when user sets new target
+            updateTarget();
+        }
         sleep(2); // poll once every two seconds
     }
 }
@@ -45,20 +47,18 @@ void TemperatureWorker::updateTarget() {
     float newTarget;
     size_t requestLength = 2 + sizeof(float);
     char request[requestLength];
+
     request[0] = 84; // command character for temperature requests
+    request[1] = parent->heater(); // set the user selected heater
 
-    if (parent->getNewTargetAvailable()) { // true when user sets new target
-        newTarget = parent->heaterTarget();
-        request[1] = parent->heater(); // set the user selected heater
-
-        b = (char*) &newTarget;
-        for (uint8_t i = 0; i < sizeof(float); i++) {
-          request[2 + i] = b[i]; // target decomposed into bytes
-        }
-
-        // send the new target to the heater PCB
-        I2CWorker::writeData(MAIN_PCB_ADDRESS, request, requestLength);
-
-        parent->resetNewTargetAvailable();
+    newTarget = parent->heaterTarget();
+    b = (char*) &newTarget;
+    for (uint8_t i = 0; i < sizeof(float); i++) {
+      request[2 + i] = b[i]; // target decomposed into bytes
     }
+
+    // send the new target to the heater PCB
+    I2CWorker::writeData(MAIN_PCB_ADDRESS, request, requestLength);
+
+    parent->resetNewTargetAvailable();
 }
