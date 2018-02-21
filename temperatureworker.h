@@ -67,7 +67,7 @@ private:
      * ...Returns:
      * ......Nothing
      */
-    void setTarget();
+    void updateTarget();
 
     TemperatureController *parent; // controller in parent thread
 };

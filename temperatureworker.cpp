@@ -7,7 +7,7 @@ TemperatureWorker::TemperatureWorker(TemperatureController *parent) : I2CWorker(
 void TemperatureWorker::pollAndUpdate() {
     while (parent->poll()) {
         readHeaterData();
-        setTarget();
+        updateTarget();
         sleep(2); // poll once every two seconds
     }
 }
@@ -40,7 +40,7 @@ void TemperatureWorker::readHeaterData() {
     }
 }
 
-void TemperatureWorker::setTarget() {
+void TemperatureWorker::updateTarget() {
     char *b;
     float newTarget;
     size_t requestLength = 2 + sizeof(float);
