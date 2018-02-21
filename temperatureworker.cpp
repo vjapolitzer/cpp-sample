@@ -23,7 +23,7 @@ bool TemperatureWorker::validTemperature(float temperature) {
 
 void TemperatureWorker::readHeaterData() {
     float heaterData[2]; // heaterData[0] := heaterTemp, heaterData[1] := heaterTarget
-    size_t requestLength = 2
+    size_t requestLength = 2;
     char request[requestLength];
     request[0] = 84; // command character for temperature requests
     request[1] = parent->heater(); // set the user selected heater
@@ -47,18 +47,18 @@ void TemperatureWorker::setTarget() {
     char request[requestLength];
     request[0] = 84; // command character for temperature requests
 
-    if (parent->getNewHeaterTarget()) { // true when user sets new target
+    if (parent->getNewTargetAvailable()) { // true when user sets new target
         newTarget = parent->heaterTarget();
         request[1] = parent->heater(); // set the user selected heater
 
         b = (char*) &newTarget;
-        for (uint8_t i = 0; i < sizeof(float); i++) { // put target into byte array
-          request[2 + i] = b[i];
+        for (uint8_t i = 0; i < sizeof(float); i++) {
+          request[2 + i] = b[i]; // target decomposed into bytes
         }
 
         // send the new target to the heater PCB
         I2CWorker::writeData(MAIN_PCB_ADDRESS, request, requestLength);
 
-        parent->resetNewHeaterTarget()
+        parent->resetNewTargetAvailable();
     }
 }
