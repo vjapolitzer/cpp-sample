@@ -4,7 +4,7 @@ TemperatureWorker::TemperatureWorker(TemperatureController *parent) : I2CWorker(
     this->parent = parent;
 }
 
-void TemperatureWorker::pollTemp() {
+void TemperatureWorker::pollAndUpdate() {
     while (parent->poll()) {
         readHeaterData();
         setTarget();

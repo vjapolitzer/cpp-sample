@@ -26,7 +26,7 @@ public slots:
      * ...Returns:
      * ......Nothing
      */
-    void pollTemp();
+    void pollAndUpdate();
 
 signals:
     /* invalidTemperature Signal
